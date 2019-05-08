@@ -1,2 +1,8 @@
 *.user*
 *-build-desktop
+*[ao]
+*.exe
+Makefile*
+moc_*
+.*
+ui_*
