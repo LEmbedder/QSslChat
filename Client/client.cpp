@@ -3,14 +3,11 @@
 #include "client.h"
 #include "ui_client.h"
 
-Client::Client(QWidget *parent) :
-  QMainWindow(parent),
-  ui(new Ui::Client)
+Client::Client(QWidget *parent) : QMainWindow(parent),  ui(new Ui::Client)
 {
   ui->setupUi(this);
 
-  // Check for SSL support.  If SSL support is not available, show a
-  // message to the user describing what to do to enable SSL support.
+  //检查SSL是否支持，如果不支持会提示怎么使能支持
   if (QSslSocket::supportsSsl())
   {
     ui->connectDisconnectButton->setEnabled(true);
@@ -27,13 +24,14 @@ Client::Client(QWidget *parent) :
     ui->chatDisplayTextEdit->setText(noSslMsg);
   }
 
-  // QSslSocket emits the encrypted() signal after the encrypted connection is established
+  // 加密建立后发送已加密信号
   connect(&socket, SIGNAL(encrypted()), this, SLOT(connectedToServer()));
 
-  // Report any SSL errors that occur
+  // 提示SSL错误
   connect(&socket, SIGNAL(sslErrors(const QList<QSslError> &)), this, SLOT(sslErrors(const QList<QSslError> &)));
 
   connect(&socket, SIGNAL(disconnected()), this, SLOT(connectionClosed()));
+  // 有数据读取
   connect(&socket, SIGNAL(readyRead()), this, SLOT(receiveMessage()));
   connect(&socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketError()));
 }
@@ -47,14 +45,14 @@ Client::~Client()
 
   delete ui;
 }
-
+/*连接和断开连接按键*/
 void Client::connectDisconnectButtonPressed()
 {
   ui->connectDisconnectButton->setEnabled(false);
 
   if (socket.state() == QAbstractSocket::UnconnectedState)
   {
-    // Initiate an SSL connection to the chat server.
+    // 初始化SSL连接
     socket.connectToHostEncrypted(ui->hostnameLineEdit->text(), ui->portSpinBox->value());
   }
   else
@@ -62,7 +60,7 @@ void Client::connectDisconnectButtonPressed()
     socket.close();
   }
 }
-
+/*发生按键*/
 void Client::sendButtonPressed()
 {
   QString message = ui->inputLineEdit->text();
@@ -83,7 +81,9 @@ void Client::connectedToServer()
   ui->chatDisplayTextEdit->clear();
 }
 
-// Process SSL errors
+/**Process SSL errors
+ * 提示错误信息
+*/
 void Client::sslErrors(const QList<QSslError> &errors)
 {
   QString errorStrings;
@@ -105,7 +105,9 @@ void Client::sslErrors(const QList<QSslError> &errors)
     socket.ignoreSslErrors();
   }
 }
-
+/**接收到的消息，直接输入到TextEdit
+ * 时间+消息内容
+*/
 void Client::receiveMessage()
 {
   if (socket.canReadLine())
@@ -115,7 +117,8 @@ void Client::receiveMessage()
                                     .arg(socket.readLine().constData()));
   }
 }
-
+/**连接关闭
+*/
 void Client::connectionClosed()
 {
   ui->connectDisconnectButton->setText("Connect");
@@ -123,7 +126,8 @@ void Client::connectionClosed()
   ui->inputLineEdit->setEnabled(false);
   ui->sendButton->setEnabled(false);
 }
-
+/**socket发生错误
+*/
 void Client::socketError()
 {
   ui->chatDisplayTextEdit->setText(QString("Socket Error: %1").arg(socket.errorString()));

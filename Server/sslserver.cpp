@@ -1,7 +1,7 @@
 #include <QSslSocket>
 #include "sslserver.h"
 
-// Intercept new socket connection and enable SSL
+//监听新的socket连接，使能SSL
 void SslServer::incomingConnection(int socketDescriptor)
 {
   QSslSocket *serverSocket = new QSslSocket();

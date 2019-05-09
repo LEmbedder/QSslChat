@@ -7,4 +7,6 @@ The sample applications provided are fully functional chat server and client app
 The applications were designed to supplement the following blog post containing notes about Qt's SSL support:
 
   http://dgraves.org/content/qt-notes-working-qsslsocket
+  
+名称：ssl(secure sockets layer:安全套接字)
 

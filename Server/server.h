@@ -40,7 +40,7 @@ private:
 private:
   QString key;
   QString certificate;
-  SslServer server;
+  SslServer sslServer;
   QList<QSslSocket *> sockets;
   Ui::Server *ui;
 };
