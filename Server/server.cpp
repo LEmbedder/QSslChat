@@ -136,7 +136,7 @@ void Server::acceptConnection()
 
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(connectionFailure()));
     //设置私钥和证书
-    socket->setPrivateKey(key);
+    socket->setPrivateKey(key,QSsl::Rsa, QSsl::Pem,"123456");
     socket->setLocalCertificate(certificate);
     //设置验证模式
     socket->setPeerVerifyMode(QSslSocket::VerifyNone);
